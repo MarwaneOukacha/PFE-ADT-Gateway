@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: API
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8000/auth/realms/ADT-Validation-documents
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+  config:
+    import: "configserver:http://localhost:8788"
+  cloud:
+    config:
+      enabled: true
+    gateway:
+      routes:
+        - id: Administration
+          uri: lb://ADMINISTRATION
+          predicates:
+           - Path=/users/**
+server:
+  port: 8282
+
+# Configuration pour Eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    registerWithEureka: true
+    fetchRegistry: true
+app:
+  key_cloak:
+    realm: ADT-Validation-documents
+    baseUrl: http://localhost:8000
+    auth: ${app.key_cloak.baseUrl}/auth/realms/${app.key_cloak.realm}/protocol/openid-connect/token
+    client_id: microservice-administration
+    client_secret: eadbdaae-35f2-4ec7-90a5-1f74e7935fa9 
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    operationsSorter: method
+  
