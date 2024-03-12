@@ -20,6 +20,8 @@ spring:
            - Path=/users/**
 server:
   port: 8282
+  servlet:
+    context-path: /
 
 # Configuration pour Eureka
 eureka:
@@ -39,5 +41,7 @@ springdoc:
   api-docs:
     path: /api-docs
   swagger-ui:
+    enabled: true
+    path: swagger-ui/index.html
     operationsSorter: method
   
