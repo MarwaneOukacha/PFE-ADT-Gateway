@@ -29,4 +29,20 @@ public class authentificationServiceV01 implements authentificationService {
 		}
 		return null;
 	}
+
+	@Override
+	public ResponseEntity<authentificationResponseDto> authenticateClientApp(String codeApp, String secret) {
+		try {
+			// Appel de la méthode d'authentification
+			response = authService.authenticateClientApp(codeApp, secret);
+			// Traiter la réponse de Keycloak
+			if (response.getStatusCode().is2xxSuccessful()) {
+				return response;
+			}
+		} catch (Exception e) {
+			// Gérer les cas d'échec d'authentification
+			throw new PasswordException("Une erreur s'est produite lors de l'authentification");
+		}
+		return null;
+	}
 }

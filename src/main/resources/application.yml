@@ -17,7 +17,8 @@ spring:
         - id: Administration
           uri: lb://ADMINISTRATION
           predicates:
-           - Path=/users/**
+           - Path=/users/**,/clients/**
+
 server:
   port: 8282
   servlet:
@@ -27,7 +28,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8762/eureka
     registerWithEureka: true
     fetchRegistry: true
 app:
@@ -36,7 +37,7 @@ app:
     baseUrl: http://localhost:8000
     auth: ${app.key_cloak.baseUrl}/auth/realms/${app.key_cloak.realm}/protocol/openid-connect/token
     client_id: microservice-administration
-    client_secret: eadbdaae-35f2-4ec7-90a5-1f74e7935fa9 
+    client_secret: 36088666-047f-44d6-a1d4-8a8370a704db
 springdoc:
   api-docs:
     path: /api-docs

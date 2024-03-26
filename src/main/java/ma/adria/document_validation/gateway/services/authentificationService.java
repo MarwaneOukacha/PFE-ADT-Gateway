@@ -8,5 +8,6 @@ import ma.adria.document_validation.gateway.dto.authentificationResponseDto;
 public interface authentificationService {
 
 	ResponseEntity<authentificationResponseDto> authenticateUser(LoginRequest loginRequest);
+	public ResponseEntity<authentificationResponseDto> authenticateClientApp(String codeApp, String secret);
 
 }

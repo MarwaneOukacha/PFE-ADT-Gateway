@@ -33,4 +33,16 @@ public class KeycloakAuthService {
 
         return response;
     }
+    public ResponseEntity<authentificationResponseDto> authenticateClientApp(String codeapp,String secret){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        String requestBody = "grant_type=client_credentials&client_id="+codeapp+"&client_secret="+secret;
+
+        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+
+        ResponseEntity<authentificationResponseDto> response = restTemplate.postForEntity(keycloakUrl, request, authentificationResponseDto.class);
+
+        return response;
+    }
 }
