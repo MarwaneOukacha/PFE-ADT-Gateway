@@ -26,13 +26,8 @@ public class AuthController {
         return authService.authenticateClientApp(loginRequestApp.getCodeapp(),loginRequestApp.getSecret());
     }
     @PostMapping("/logout")
-    public ResponseEntity<Void>  logout(@Valid @RequestBody LogOutDTO refreshToken) {
-        authService.logout(refreshToken);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-    }
-    @PostMapping("/logoutApp")
-    public ResponseEntity<Void> logoutClient(@RequestBody @Valid LogoutApplicationRequestDTO request) {
-        authService.logoutClientApp(request);
+    public ResponseEntity<Void>  logout(@Valid @RequestBody LogOutDTO logout) {
+        authService.logout(logout);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }
