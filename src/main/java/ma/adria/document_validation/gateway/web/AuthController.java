@@ -1,11 +1,10 @@
 package ma.adria.document_validation.gateway.web;
 import ma.adria.document_validation.gateway.dto.LoginRequestApp;
+import ma.adria.document_validation.gateway.dto.RefreshTokenDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import ma.adria.document_validation.gateway.dto.LoginRequest;
@@ -14,6 +13,7 @@ import ma.adria.document_validation.gateway.services.authentificationService;
 
 @RestController
 @Validated
+@RequestMapping("/api")
 public class AuthController {
 
     @Autowired
@@ -26,5 +26,9 @@ public class AuthController {
     @PostMapping("/login/app")
     public ResponseEntity<authentificationResponseDto> loginApp(@Valid @RequestBody LoginRequestApp loginRequestApp) {
         return authService.authenticateClientApp(loginRequestApp.getCodeapp(),loginRequestApp.getSecret());
+    }
+    @PostMapping("/logout")
+    public void logout(@Valid @RequestBody RefreshTokenDTO refreshToken) {
+        authService.logout(refreshToken);
     }
 }

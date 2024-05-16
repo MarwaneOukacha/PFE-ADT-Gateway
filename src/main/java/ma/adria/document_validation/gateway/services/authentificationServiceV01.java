@@ -1,5 +1,6 @@
 package ma.adria.document_validation.gateway.services;
 
+import ma.adria.document_validation.gateway.dto.RefreshTokenDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,11 @@ public class authentificationServiceV01 implements authentificationService {
 	public ResponseEntity<authentificationResponseDto> authenticateUser(LoginRequest loginRequest) {
 		authentificationResponseDto dto = new authentificationResponseDto();
 		try {
-			// Appel de la méthode d'authentification
 			response = authService.authenticateUser(loginRequest.getEmail(), loginRequest.getPassword());
-			// Traiter la réponse de Keycloak
 			if (response.getStatusCode().is2xxSuccessful()) {
 				return response;
 			}
 		} catch (Exception e) {
-			// Gérer les cas d'échec d'authentification
 			throw new PasswordException("Une erreur s'est produite lors de l'authentification");
 		}
 		return null;
@@ -44,5 +42,10 @@ public class authentificationServiceV01 implements authentificationService {
 			throw new PasswordException("Une erreur s'est produite lors de l'authentification");
 		}
 		return null;
+	}
+
+	@Override
+	public void logout(RefreshTokenDTO refreshToken) {
+		authService.logOutUser(refreshToken);
 	}
 }
