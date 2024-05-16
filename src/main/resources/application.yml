@@ -37,6 +37,7 @@ app:
     realm: ADT-Validation-documents
     baseUrl: http://localhost:8000
     auth: ${app.key_cloak.baseUrl}/auth/realms/${app.key_cloak.realm}/protocol/openid-connect/token
+    ClientDetails: http://localhost:8282/clients/details/app/
     logout: ${app.key_cloak.baseUrl}/auth/realms/${app.key_cloak.realm}/protocol/openid-connect/logout
     client_id: microservice-administration
     client_secret: 36088666-047f-44d6-a1d4-8a8370a704db

@@ -1,5 +1,5 @@
 package ma.adria.document_validation.gateway.services;
-import ma.adria.document_validation.gateway.dto.RefreshTokenDTO;
+import ma.adria.document_validation.gateway.dto.LogOutDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -35,19 +35,29 @@ public class KeycloakAuthService {
 
         return response;
     }
-    public void logOutUser(RefreshTokenDTO refreshToken) {
-        if(refreshToken.getRefreshToken()!=null && !refreshToken.getRefreshToken().equals("")){
-            try{HttpHeaders headers = new HttpHeaders();
+    public void logOut(LogOutDTO logout) {
+        if(logout.getRefreshToken()!=null && !logout.getRefreshToken().equals("")){
+            HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-            String requestBody = "refresh_token=" + refreshToken.getRefreshToken() + "&client_id="+client_id+"&client_secret="+client_secret;
-
-            HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
-
-            restTemplate.postForEntity(keycloakLogoutURL, request,void.class);
-            }catch (Exception ex){
-                throw new RuntimeException("Exception: "+ex.getMessage());
+            if( logout.getCodeapp()!=null && logout.getSecret()!=null && !logout.getCodeapp().equals("") && !logout.getSecret().equals("")){
+                try{
+                    String requestBody = "refresh_token=" + logout.getRefreshToken() + "&client_id="+logout.getCodeapp()+"&client_secret="+logout.getSecret();
+                    HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+                    restTemplate.postForEntity(keycloakLogoutURL, request,void.class);
+                }catch (Exception ex){
+                    throw new RuntimeException("Exception: "+ex.getMessage());
+                }
+            }else {
+                try{
+                    String requestBody = "refresh_token=" + logout.getRefreshToken() + "&client_id="+client_id+"&client_secret="+client_secret;
+                    HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+                    restTemplate.postForEntity(keycloakLogoutURL, request,void.class);
+                }catch (Exception ex){
+                    throw new RuntimeException("Exception: "+ex.getMessage());
+                }
             }
+
         }
     }
     public ResponseEntity<authentificationResponseDto> authenticateClientApp(String codeapp,String secret){
@@ -62,4 +72,6 @@ public class KeycloakAuthService {
 
         return response;
     }
+
+
 }

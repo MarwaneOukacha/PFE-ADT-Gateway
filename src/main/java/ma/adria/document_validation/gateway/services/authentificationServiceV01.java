@@ -1,18 +1,19 @@
 package ma.adria.document_validation.gateway.services;
 
-import ma.adria.document_validation.gateway.dto.RefreshTokenDTO;
+import ma.adria.document_validation.gateway.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ma.adria.document_validation.gateway.dto.LoginRequest;
-import ma.adria.document_validation.gateway.dto.authentificationResponseDto;
 import ma.adria.document_validation.gateway.exceptions.PasswordException;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class authentificationServiceV01 implements authentificationService {
 	@Autowired
 	private KeycloakAuthService authService;
+	@Autowired
+	private RestTemplate restTemplate;
 	private ResponseEntity<authentificationResponseDto> response;
 	@Override
 	public ResponseEntity<authentificationResponseDto> authenticateUser(LoginRequest loginRequest) {
@@ -45,7 +46,25 @@ public class authentificationServiceV01 implements authentificationService {
 	}
 
 	@Override
-	public void logout(RefreshTokenDTO refreshToken) {
-		authService.logOutUser(refreshToken);
+	public void logout(LogOutDTO logout) {
+		authService.logOut(logout);
+	}
+
+	@Override
+	public void logoutClientApp(LogoutApplicationRequestDTO request) {
+		String codeapp = request.getApplicationCode() ;
+		String Secret = getClientDetails(codeapp).getBody().getSecret();
+		LogOutDTO dto=new LogOutDTO();
+		dto.setCodeapp(codeapp);
+		dto.setSecret(Secret);
+		dto.setRefreshToken(request.getRefreshToken());
+		authService.logOut(dto);
+	}
+
+	public ResponseEntity<ClientDetailsResponseDTO> getClientDetails(@PathVariable String codeApp) {
+		String endpointUrl = "http://localhost:8282/clients/details/app/"+codeApp;
+		ResponseEntity<ClientDetailsResponseDTO> response = restTemplate.getForEntity(endpointUrl, ClientDetailsResponseDTO.class);
+		return response;
 	}
 }
+

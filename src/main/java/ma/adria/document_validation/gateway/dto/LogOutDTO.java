@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshTokenDTO {
+public class LogOutDTO {
     private String refreshToken;
+    private String codeapp;
+    private String secret;
 }
