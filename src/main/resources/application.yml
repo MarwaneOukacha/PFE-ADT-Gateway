@@ -17,9 +17,12 @@ spring:
         - id: Administration
           uri: lb://ADMINISTRATION
           predicates:
-           - Path=/users/**,/ADTConst/**,/clients/**
-      default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_UNIQUE
+            - Path=/users/**,/ADTConst/**,/clients/**
+        - id: documentValidation
+          uri: lb://documentValidation
+          predicates:
+            - Path=/documentValidation/**
+
 server:
   port: 8282
   servlet:
