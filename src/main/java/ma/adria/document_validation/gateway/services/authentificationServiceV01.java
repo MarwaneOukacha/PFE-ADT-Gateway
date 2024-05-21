@@ -61,6 +61,12 @@ public class authentificationServiceV01 implements authentificationService {
 		authService.logOut(dto);
 	}
 
+	@Override
+	public ResponseEntity<String> getAccessToken(RefreshToken refreshToken) {
+
+        return authService.getAccessToken(refreshToken);
+    }
+
 	public ResponseEntity<ClientDetailsResponseDTO> getClientDetails(@PathVariable String codeApp) {
 		String endpointUrl = "http://localhost:8282/clients/details/app/"+codeApp;
 		ResponseEntity<ClientDetailsResponseDTO> response = restTemplate.getForEntity(endpointUrl, ClientDetailsResponseDTO.class);

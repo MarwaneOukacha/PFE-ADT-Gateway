@@ -1,5 +1,6 @@
 package ma.adria.document_validation.gateway.services;
 import ma.adria.document_validation.gateway.dto.LogOutDTO;
+import ma.adria.document_validation.gateway.dto.RefreshToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -32,6 +33,16 @@ public class KeycloakAuthService {
         HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<authentificationResponseDto> response = restTemplate.postForEntity(keycloakUrl, request, authentificationResponseDto.class);
+
+        return response;
+    }
+    public ResponseEntity<String> getAccessToken(RefreshToken refreshToken) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        String requestBody = "grant_type=refresh_token&refresh_token=" + refreshToken.getRefreshToken() + "&client_id="+client_id+"&client_secret="+client_secret;
+        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<String> response =restTemplate.postForEntity(keycloakUrl, request,String.class);
 
         return response;
     }

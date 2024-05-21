@@ -1,11 +1,7 @@
 package ma.adria.document_validation.gateway.services;
 
-import ma.adria.document_validation.gateway.dto.LogoutApplicationRequestDTO;
-import ma.adria.document_validation.gateway.dto.LogOutDTO;
+import ma.adria.document_validation.gateway.dto.*;
 import org.springframework.http.ResponseEntity;
-
-import ma.adria.document_validation.gateway.dto.LoginRequest;
-import ma.adria.document_validation.gateway.dto.authentificationResponseDto;
 
 public interface authentificationService {
 
@@ -16,4 +12,5 @@ public interface authentificationService {
 
 	void logoutClientApp(LogoutApplicationRequestDTO request);
 
+	ResponseEntity<String> getAccessToken(RefreshToken logout);
 }

@@ -30,4 +30,8 @@ public class AuthController {
         authService.logout(logout);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
+    @PostMapping("/accessToken")
+    public ResponseEntity<String>  getAccessToken(@Valid @RequestBody RefreshToken refreshToken) {
+        return authService.getAccessToken(refreshToken);
+    }
 }
