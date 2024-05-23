@@ -1,5 +1,6 @@
 package ma.adria.document_validation.gateway.config;
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -19,12 +20,13 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebFluxSecurity
-public class SecurityConfig{
+public class SecurityConfig implements WebFluxConfigurer {
 
     private static final String[] PUBLIC_RESOURCES = {
             "/api-docs/**",
             "/swagger-ui/**",
-            "/api/**"
+            "/api/**",
+            "/**"
     };
 
     @Bean
@@ -32,8 +34,8 @@ public class SecurityConfig{
         return serverHttpSecurity.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeExchange(exchange ->
-                        exchange.pathMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                                .pathMatchers(PUBLIC_RESOURCES).permitAll()
+                        exchange.pathMatchers(PUBLIC_RESOURCES).permitAll()
+                                .pathMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                                 .anyExchange().authenticated()
                 ).oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults())).build();
     }
@@ -47,7 +49,8 @@ public class SecurityConfig{
         corsConfig.addAllowedMethod(HttpMethod.DELETE);
         corsConfig.addAllowedMethod(HttpMethod.OPTIONS);
         corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
-        corsConfig.setExposedHeaders(Collections.singletonList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
+        corsConfig.addExposedHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
 
