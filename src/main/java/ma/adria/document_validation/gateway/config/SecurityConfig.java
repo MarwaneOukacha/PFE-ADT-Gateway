@@ -3,6 +3,7 @@ package ma.adria.document_validation.gateway.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -18,13 +19,12 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebFluxSecurity
-public class SecurityConfig implements WebFluxConfigurer {
+public class SecurityConfig{
 
     private static final String[] PUBLIC_RESOURCES = {
             "/api-docs/**",
             "/swagger-ui/**",
-            "/api/**",
-            "/**"
+            "/api/**"
     };
 
     @Bean
@@ -32,17 +32,25 @@ public class SecurityConfig implements WebFluxConfigurer {
         return serverHttpSecurity.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeExchange(exchange ->
-                        exchange.pathMatchers(PUBLIC_RESOURCES).permitAll()
+                        exchange.pathMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                                .pathMatchers(PUBLIC_RESOURCES).permitAll()
                                 .anyExchange().authenticated()
                 ).oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults())).build();
     }
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "OPTIONS", "PATCH")
-                .allowCredentials(false)
-                .exposedHeaders(HttpHeaders.CONTENT_DISPOSITION)
-        ;
+    @Bean
+    public CorsWebFilter corsWebFilter() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        corsConfig.addAllowedMethod(HttpMethod.GET);
+        corsConfig.addAllowedMethod(HttpMethod.POST);
+        corsConfig.addAllowedMethod(HttpMethod.PUT);
+        corsConfig.addAllowedMethod(HttpMethod.DELETE);
+        corsConfig.addAllowedMethod(HttpMethod.OPTIONS);
+        corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
+        corsConfig.setExposedHeaders(Collections.singletonList(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+
+        return new CorsWebFilter(source);
     }
 }
