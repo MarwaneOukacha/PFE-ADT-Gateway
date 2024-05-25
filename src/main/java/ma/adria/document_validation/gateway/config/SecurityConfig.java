@@ -14,8 +14,6 @@ import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-
-import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
@@ -25,20 +23,22 @@ public class SecurityConfig implements WebFluxConfigurer {
     private static final String[] PUBLIC_RESOURCES = {
             "/api-docs/**",
             "/swagger-ui/**",
-            "/api/**",
-            "/**"
+            "/api/**"
     };
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity serverHttpSecurity) {
-        return serverHttpSecurity.csrf(ServerHttpSecurity.CsrfSpec::disable)
+        return serverHttpSecurity
                 .cors(Customizer.withDefaults())
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchange ->
                         exchange.pathMatchers(PUBLIC_RESOURCES).permitAll()
                                 .pathMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                                 .anyExchange().authenticated()
                 ).oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults())).build();
     }
+
+
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
@@ -46,14 +46,15 @@ public class SecurityConfig implements WebFluxConfigurer {
         corsConfig.addAllowedMethod(HttpMethod.GET);
         corsConfig.addAllowedMethod(HttpMethod.POST);
         corsConfig.addAllowedMethod(HttpMethod.PUT);
+        corsConfig.addAllowedMethod(HttpMethod.PATCH);
         corsConfig.addAllowedMethod(HttpMethod.DELETE);
         corsConfig.addAllowedMethod(HttpMethod.OPTIONS);
         corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
+        corsConfig.addAllowedHeader(HttpHeaders.CONTENT_TYPE); // Allow 'Content-Type' header
         corsConfig.addExposedHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN);
-
+        corsConfig.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);
-
         return new CorsWebFilter(source);
     }
 }
