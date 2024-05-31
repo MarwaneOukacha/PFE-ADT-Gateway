@@ -38,7 +38,15 @@ public class SecurityConfig implements WebFluxConfigurer {
                 ).oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults())).build();
     }
 
-
+    /*@Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "OPTIONS", "PATCH")
+                *//*.allowedHeaders(HttpHeaders.AUTHORIZATION)
+                .exposedHeaders(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN)*//*
+                .maxAge(3600L);
+    }*/
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
@@ -50,7 +58,8 @@ public class SecurityConfig implements WebFluxConfigurer {
         corsConfig.addAllowedMethod(HttpMethod.DELETE);
         corsConfig.addAllowedMethod(HttpMethod.OPTIONS);
         corsConfig.addAllowedHeader(HttpHeaders.AUTHORIZATION);
-        corsConfig.addAllowedHeader(HttpHeaders.CONTENT_TYPE); // Allow 'Content-Type' header
+        corsConfig.addAllowedHeader(HttpHeaders.CONTENT_TYPE);
+        corsConfig.addExposedHeader("Custom-Header");
         corsConfig.addExposedHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN);
         corsConfig.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
