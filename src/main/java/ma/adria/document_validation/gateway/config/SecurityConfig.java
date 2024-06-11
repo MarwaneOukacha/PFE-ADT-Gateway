@@ -23,7 +23,8 @@ public class SecurityConfig implements WebFluxConfigurer {
     private static final String[] PUBLIC_RESOURCES = {
             "/api-docs/**",
             "/swagger-ui/**",
-            "/api/**"
+            "/api/**",
+            "/users/add"
     };
 
     @Bean
